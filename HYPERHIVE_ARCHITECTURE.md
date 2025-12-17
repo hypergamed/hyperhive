@@ -2,12 +2,12 @@
 
 ## Project Overview
 
-| Property | Value |
-|----------|-------|
-| **Name** | Hyperhive |
-| **npm Package** | `@hyperhive/colony` |
-| **GitHub** | `github.com/Hypergamed/Hyperhive` |
-| **License** | MIT |
+| Property        | Value                                                                           |
+| --------------- | ------------------------------------------------------------------------------- |
+| **Name**        | Hyperhive                                                                       |
+| **npm Package** | `@hyperhive/colony`                                                             |
+| **GitHub**      | `github.com/Hypergamed/Hyperhive`                                               |
+| **License**     | MIT                                                                             |
 | **Description** | A TypeScript library wrapping the Claude Agent SDK with clean, event-driven API |
 
 ### Why "Hyperhive"?
@@ -43,6 +43,7 @@ A TypeScript library that provides a clean, event-driven abstraction layer over 
 ### Problem Statement
 
 The official Claude Agent SDK is powerful but low-level:
+
 - Returns async iterators requiring manual message handling
 - No built-in session management across multiple instances
 - Configuration must be passed on every call
@@ -50,6 +51,7 @@ The official Claude Agent SDK is powerful but low-level:
 - Developers rebuild the same abstractions repeatedly
 
 Existing community solutions are **standalone servers** that:
+
 - Dictate authentication mechanisms
 - Bundle specific storage solutions
 - Couple WebSocket implementations
@@ -58,6 +60,7 @@ Existing community solutions are **standalone servers** that:
 ### Solution
 
 A **middleware library** that:
+
 - Wraps Claude Agent SDK with clean, event-driven API
 - Manages session lifecycle
 - Provides configuration layering
@@ -154,6 +157,7 @@ Each phase builds on previous phases. Later phases can be developed in parallel 
 The minimum viable implementation that provides value over raw SDK usage.
 
 #### Goals
+
 - Clean, event-based API for session interaction
 - Session lifecycle management
 - Configuration with sensible defaults
@@ -170,9 +174,9 @@ The colony controller - main entry point for managing drones.
 interface ColonyConfig {
   // Default configuration applied to all drones
   defaults?: {
-    model?: 'sonnet' | 'opus' | 'haiku';
+    model?: "sonnet" | "opus" | "haiku";
     tools?: string[];
-    permissionMode?: 'acceptEdits' | 'plan' | 'bypassPermissions';
+    permissionMode?: "acceptEdits" | "plan" | "bypassPermissions";
     maxThinkingTokens?: number;
   };
 
@@ -199,13 +203,13 @@ class AIColony {
   listDrones(): DroneInfo[];
 
   // Configuration
-  getDefaults(): ColonyConfig['defaults'];
-  setDefaults(defaults: ColonyConfig['defaults']): void;
+  getDefaults(): ColonyConfig["defaults"];
+  setDefaults(defaults: ColonyConfig["defaults"]): void;
 
   // Global events (all drones)
-  on(event: 'drone:hatched', handler: (drone: Drone) => void): this;
-  on(event: 'drone:retired', handler: (droneId: string) => void): this;
-  on(event: 'error', handler: (error: Error, drone?: Drone) => void): this;
+  on(event: "drone:hatched", handler: (drone: Drone) => void): this;
+  on(event: "drone:retired", handler: (droneId: string) => void): this;
+  on(event: "error", handler: (error: Error, drone?: Drone) => void): this;
 }
 ```
 
@@ -219,9 +223,9 @@ interface DroneConfig {
   cwd: string;
 
   // Optional overrides
-  model?: 'sonnet' | 'opus' | 'haiku';
+  model?: "sonnet" | "opus" | "haiku";
   tools?: string[];
-  permissionMode?: 'acceptEdits' | 'plan' | 'bypassPermissions';
+  permissionMode?: "acceptEdits" | "plan" | "bypassPermissions";
   maxThinkingTokens?: number;
   systemPrompt?: string;
 
@@ -239,7 +243,7 @@ interface AgentDefinition {
   description: string;
   prompt?: string;
   tools?: string[];
-  model?: 'sonnet' | 'opus' | 'haiku';
+  model?: "sonnet" | "opus" | "haiku";
 }
 
 interface McpServerConfig {
@@ -249,7 +253,7 @@ interface McpServerConfig {
   env?: Record<string, string>;
 }
 
-type DroneStatus = 'idle' | 'thinking' | 'tool_running' | 'error';
+type DroneStatus = "idle" | "thinking" | "tool_running" | "error";
 
 class Drone extends EventEmitter {
   // Properties
@@ -270,12 +274,12 @@ class Drone extends EventEmitter {
   clearMessages(): void;
 
   // Events
-  on(event: 'message', handler: (message: AssistantMessage) => void): this;
-  on(event: 'tool:start', handler: (data: ToolStartEvent) => void): this;
-  on(event: 'tool:end', handler: (data: ToolEndEvent) => void): this;
-  on(event: 'status', handler: (status: DroneStatus) => void): this;
-  on(event: 'complete', handler: (data: CompleteEvent) => void): this;
-  on(event: 'error', handler: (error: Error) => void): this;
+  on(event: "message", handler: (message: AssistantMessage) => void): this;
+  on(event: "tool:start", handler: (data: ToolStartEvent) => void): this;
+  on(event: "tool:end", handler: (data: ToolEndEvent) => void): this;
+  on(event: "status", handler: (status: DroneStatus) => void): this;
+  on(event: "complete", handler: (data: CompleteEvent) => void): this;
+  on(event: "error", handler: (error: Error) => void): this;
 }
 ```
 
@@ -284,7 +288,7 @@ class Drone extends EventEmitter {
 ```typescript
 interface AssistantMessage {
   id: string;
-  role: 'assistant';
+  role: "assistant";
   content: string;
   timestamp: Date;
 }
@@ -323,46 +327,46 @@ type Message = AssistantMessage | ToolUseMessage | ToolResultMessage;
 #### Usage Example
 
 ```typescript
-import { AIColony } from '@hyperhive/colony';
+import { AIColony } from "@hyperhive/colony";
 
 // Initialize once in your app
 const colony = new AIColony({
   defaults: {
-    model: 'sonnet',
-    tools: ['Read', 'Edit', 'Bash', 'Glob', 'Grep', 'Task'],
-    permissionMode: 'acceptEdits',
+    model: "sonnet",
+    tools: ["Read", "Edit", "Bash", "Glob", "Grep", "Task"],
+    permissionMode: "acceptEdits",
   },
 });
 
 // Hatch a Drone (create LLM session)
 const claudeDrone = await colony.hatch({
-  cwd: '/path/to/project',
-  metadata: { userId: 'user-123' },
+  cwd: "/path/to/project",
+  metadata: { userId: "user-123" },
 });
 
 // Listen to events
-claudeDrone.on('message', (msg) => {
-  console.log('Claude:', msg.content);
+claudeDrone.on("message", (msg) => {
+  console.log("Claude:", msg.content);
 });
 
-claudeDrone.on('tool:start', ({ tool, input }) => {
+claudeDrone.on("tool:start", ({ tool, input }) => {
   console.log(`Running ${tool}...`);
 });
 
-claudeDrone.on('tool:end', ({ tool, durationMs }) => {
+claudeDrone.on("tool:end", ({ tool, durationMs }) => {
   console.log(`${tool} completed in ${durationMs}ms`);
 });
 
-claudeDrone.on('complete', ({ usage }) => {
+claudeDrone.on("complete", ({ usage }) => {
   console.log(`Done! Cost: $${usage.costUsd.toFixed(4)}`);
 });
 
-claudeDrone.on('error', (err) => {
-  console.error('Error:', err.message);
+claudeDrone.on("error", (err) => {
+  console.error("Error:", err.message);
 });
 
 // Send prompt with buzz()
-await claudeDrone.buzz('Fix the authentication bug in auth.ts');
+await claudeDrone.buzz("Fix the authentication bug in auth.ts");
 
 // Get history
 const messages = claudeDrone.getMessages();
@@ -410,20 +414,20 @@ Enable token-by-token streaming for real-time UI updates.
 ```typescript
 // Enable in drone options
 const claudeDrone = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   streaming: {
-    partial: true,  // Enable partial messages
+    partial: true, // Enable partial messages
   },
 });
 
 // Listen to partial updates
-claudeDrone.on('message:partial', (chunk: string) => {
+claudeDrone.on("message:partial", (chunk: string) => {
   process.stdout.write(chunk);
 });
 
 // Full message still emitted when complete
-claudeDrone.on('message', (msg) => {
-  console.log('\nComplete:', msg.content);
+claudeDrone.on("message", (msg) => {
+  console.log("\nComplete:", msg.content);
 });
 ```
 
@@ -452,9 +456,9 @@ class Drone {
 }
 
 // Usage
-const answer = await claudeDrone.ask('What does the auth module do?');
-const { filesChanged } = await claudeDrone.edit('Add input validation to login form');
-const { exitCode } = await claudeDrone.run('npm test');
+const answer = await claudeDrone.ask("What does the auth module do?");
+const { filesChanged } = await claudeDrone.edit("Add input validation to login form");
+const { exitCode } = await claudeDrone.run("npm test");
 ```
 
 **Implementation**: Wrapper methods that call `buzz()` and parse the response.
@@ -485,24 +489,24 @@ const recalled = await colony.recall(snapshot.sdkSessionId);
 Pre-built templates for common agent types.
 
 ```typescript
-import { templates } from '@hyperhive/colony';
+import { templates } from "@hyperhive/colony";
 
 const claudeDrone = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   systemPrompt: templates.codeReviewer({
-    language: 'typescript',
-    strictness: 'high',
-    focusAreas: ['security', 'performance'],
+    language: "typescript",
+    strictness: "high",
+    focusAreas: ["security", "performance"],
   }),
 });
 
 // Available templates
-templates.codeReviewer(options)
-templates.bugFixer(options)
-templates.testWriter(options)
-templates.documentationWriter(options)
-templates.refactorer(options)
-templates.securityAuditor(options)
+templates.codeReviewer(options);
+templates.bugFixer(options);
+templates.testWriter(options);
+templates.documentationWriter(options);
+templates.refactorer(options);
+templates.securityAuditor(options);
 ```
 
 **Implementation**: String template functions that generate system prompts.
@@ -512,18 +516,18 @@ templates.securityAuditor(options)
 Validate options and provide helpful error messages.
 
 ```typescript
-import { validateConfig, ConfigError } from '@hyperhive/colony';
+import { validateConfig, ConfigError } from "@hyperhive/colony";
 
 try {
   const claudeDrone = await colony.hatch({
-    cwd: '/nonexistent/path',  // Error: path doesn't exist
-    tools: ['InvalidTool'],     // Error: unknown tool
-    model: 'gpt-4',             // Error: invalid model
+    cwd: "/nonexistent/path", // Error: path doesn't exist
+    tools: ["InvalidTool"], // Error: unknown tool
+    model: "gpt-4", // Error: invalid model
   });
 } catch (err) {
   if (err instanceof ConfigError) {
-    console.log(err.field);    // 'cwd'
-    console.log(err.message);  // 'Directory does not exist: /nonexistent/path'
+    console.log(err.field); // 'cwd'
+    console.log(err.message); // 'Directory does not exist: /nonexistent/path'
     console.log(err.suggestion); // 'Check that the path exists and is accessible'
   }
 }
@@ -542,21 +546,23 @@ Optional packages that provide ready-to-use integrations with popular frameworks
 ```typescript
 // Package: @hyperhive/plugin-fastify
 
-import fastify from 'fastify';
-import { colonyPlugin } from '@hyperhive/plugin-fastify';
-import { AIColony } from '@hyperhive/colony';
+import fastify from "fastify";
+import { colonyPlugin } from "@hyperhive/plugin-fastify";
+import { AIColony } from "@hyperhive/colony";
 
-const colony = new AIColony({ /* ... */ });
+const colony = new AIColony({
+  /* ... */
+});
 const app = fastify();
 
 app.register(colonyPlugin, {
   colony,
-  prefix: '/api/colony',
+  prefix: "/api/colony",
 
   // Required: Your authorization logic
   authorize: async (request) => {
     const user = await verifyToken(request.headers.authorization);
-    if (!user) throw new Error('Unauthorized');
+    if (!user) throw new Error("Unauthorized");
 
     return {
       userId: user.id,
@@ -646,14 +652,22 @@ GET /api/colony/drones/:id/ws
 ```typescript
 // Client -> Server
 interface ClientMessage {
-  type: 'buzz' | 'interrupt' | 'ping';
+  type: "buzz" | "interrupt" | "ping";
   content?: string;
 }
 
 // Server -> Client
 interface ServerMessage {
-  type: 'connected' | 'message' | 'message:partial' | 'tool:start' |
-        'tool:end' | 'status' | 'complete' | 'error' | 'pong';
+  type:
+    | "connected"
+    | "message"
+    | "message:partial"
+    | "tool:start"
+    | "tool:end"
+    | "status"
+    | "complete"
+    | "error"
+    | "pong";
   data: unknown;
   timestamp: string;
 }
@@ -666,19 +680,26 @@ interface ServerMessage {
 ```typescript
 // Package: @hyperhive/plugin-express
 
-import express from 'express';
-import { createColonyRouter } from '@hyperhive/plugin-express';
-import { AIColony } from '@hyperhive/colony';
+import express from "express";
+import { createColonyRouter } from "@hyperhive/plugin-express";
+import { AIColony } from "@hyperhive/colony";
 
-const colony = new AIColony({ /* ... */ });
+const colony = new AIColony({
+  /* ... */
+});
 const app = express();
 
-app.use('/api/colony', createColonyRouter(colony, {
-  authorize: async (req) => {
-    // Same interface as Fastify
-  },
-  hooks: { /* ... */ },
-}));
+app.use(
+  "/api/colony",
+  createColonyRouter(colony, {
+    authorize: async (req) => {
+      // Same interface as Fastify
+    },
+    hooks: {
+      /* ... */
+    },
+  })
+);
 
 app.listen(3000);
 ```
@@ -741,9 +762,9 @@ export function Chat({ droneId }: { droneId: string }) {
 ```typescript
 // Package: @hyperhive/plugin-trpc
 
-import { initTRPC } from '@trpc/server';
-import { createColonyRouter } from '@hyperhive/plugin-trpc';
-import { colony } from './colony';
+import { initTRPC } from "@trpc/server";
+import { createColonyRouter } from "@hyperhive/plugin-trpc";
+import { colony } from "./colony";
 
 const t = initTRPC.context<Context>().create();
 
@@ -759,7 +780,7 @@ const utils = trpc.useUtils();
 // Hatch drone
 const hatchDrone = trpc.colony.hatch.useMutation();
 const drone = await hatchDrone.mutateAsync({
-  projectPath: '/my/project'
+  projectPath: "/my/project",
 });
 
 // Subscribe to messages (WebSocket)
@@ -776,7 +797,7 @@ trpc.colony.messages.useSubscription(
 const buzz = trpc.colony.buzz.useMutation();
 await buzz.mutateAsync({
   droneId: drone.id,
-  content: 'Fix the bug'
+  content: "Fix the bug",
 });
 ```
 
@@ -787,15 +808,15 @@ await buzz.mutateAsync({
 ```typescript
 // Package: @hyperhive/plugin-nestjs
 
-import { Module } from '@nestjs/common';
-import { ColonyModule } from '@hyperhive/plugin-nestjs';
+import { Module } from "@nestjs/common";
+import { ColonyModule } from "@hyperhive/plugin-nestjs";
 
 @Module({
   imports: [
     ColonyModule.forRoot({
       defaults: {
-        model: 'sonnet',
-        tools: ['Read', 'Edit', 'Bash'],
+        model: "sonnet",
+        tools: ["Read", "Edit", "Bash"],
       },
     }),
   ],
@@ -810,21 +831,21 @@ export class CodingService {
   async reviewCode(projectPath: string) {
     const drone = await this.colony.hatch({ cwd: projectPath });
 
-    drone.on('complete', (result) => {
+    drone.on("complete", (result) => {
       // Handle completion
     });
 
-    await drone.buzz('Review the code for security issues');
+    await drone.buzz("Review the code for security issues");
   }
 }
 
 // With guards
-@Controller('colony')
+@Controller("colony")
 @UseGuards(ColonyAuthGuard)
 export class ColonyController {
   constructor(private colony: ColonyService) {}
 
-  @Post('drones')
+  @Post("drones")
   async hatchDrone(@Body() dto: HatchDroneDto, @User() user: UserEntity) {
     return this.colony.hatch({
       cwd: dto.projectPath,
@@ -841,18 +862,21 @@ export class ColonyController {
 ```typescript
 // Package: @hyperhive/plugin-hono
 
-import { Hono } from 'hono';
-import { createColonyRoutes } from '@hyperhive/plugin-hono';
-import { colony } from './colony';
+import { Hono } from "hono";
+import { createColonyRoutes } from "@hyperhive/plugin-hono";
+import { colony } from "./colony";
 
 const app = new Hono();
 
-app.route('/api/colony', createColonyRoutes(colony, {
-  authorize: async (c) => {
-    const user = c.get('user');
-    return { userId: user.id };
-  },
-}));
+app.route(
+  "/api/colony",
+  createColonyRoutes(colony, {
+    authorize: async (c) => {
+      const user = c.get("user");
+      return { userId: user.id };
+    },
+  })
+);
 
 export default app;
 ```
@@ -907,19 +931,19 @@ interface SerializedDrone {
 ```typescript
 // Package: @hyperhive/storage-redis
 
-import { AIColony } from '@hyperhive/colony';
-import { RedisDroneStore, RedisMessageStore } from '@hyperhive/storage-redis';
+import { AIColony } from "@hyperhive/colony";
+import { RedisDroneStore, RedisMessageStore } from "@hyperhive/storage-redis";
 
 const colony = new AIColony({
   droneStore: new RedisDroneStore({
-    url: 'redis://localhost:6379',
-    prefix: 'colony:drones:',
+    url: "redis://localhost:6379",
+    prefix: "colony:drones:",
     ttl: 3600 * 24, // 24 hours
   }),
 
   messageStore: new RedisMessageStore({
-    url: 'redis://localhost:6379',
-    prefix: 'colony:messages:',
+    url: "redis://localhost:6379",
+    prefix: "colony:messages:",
     maxMessages: 1000, // Per drone
   }),
 });
@@ -963,18 +987,18 @@ colony:events:{droneId}
 ```typescript
 // Package: @hyperhive/storage-postgres
 
-import { AIColony } from '@hyperhive/colony';
-import { PostgresDroneStore, PostgresMessageStore } from '@hyperhive/storage-postgres';
+import { AIColony } from "@hyperhive/colony";
+import { PostgresDroneStore, PostgresMessageStore } from "@hyperhive/storage-postgres";
 
 const colony = new AIColony({
   droneStore: new PostgresDroneStore({
     connectionString: process.env.DATABASE_URL,
-    tableName: 'colony_drones',
+    tableName: "colony_drones",
   }),
 
   messageStore: new PostgresMessageStore({
     connectionString: process.env.DATABASE_URL,
-    tableName: 'colony_messages',
+    tableName: "colony_messages",
   }),
 });
 ```
@@ -1033,14 +1057,14 @@ $$ LANGUAGE plpgsql;
 ```typescript
 // Package: @hyperhive/storage-sqlite
 
-import { SqliteStore } from '@hyperhive/storage-sqlite';
+import { SqliteStore } from "@hyperhive/storage-sqlite";
 
 const colony = new AIColony({
   droneStore: new SqliteStore({
-    path: './colony-drones.db',
+    path: "./colony-drones.db",
   }),
   messageStore: new SqliteStore({
-    path: './colony-drones.db',
+    path: "./colony-drones.db",
   }),
 });
 ```
@@ -1053,7 +1077,7 @@ Advanced drone state management.
 
 ```typescript
 // Create checkpoint (saves current state)
-const checkpoint = await claudeDrone.checkpoint('before-refactor');
+const checkpoint = await claudeDrone.checkpoint("before-refactor");
 // Returns: { id: 'chk_xxx', name: 'before-refactor', timestamp: Date }
 
 // List checkpoints
@@ -1065,12 +1089,12 @@ await claudeDrone.restore(checkpoint.id);
 // Fork drone (create new drone from checkpoint)
 const fork = await claudeDrone.fork({
   checkpoint: checkpoint.id, // Optional: fork from checkpoint
-  name: 'alternative-approach',
+  name: "alternative-approach",
 });
 
 // Now you have two independent drones
-await claudeDrone.buzz('Refactor using classes');
-await fork.buzz('Refactor using functions');
+await claudeDrone.buzz("Refactor using classes");
+await fork.buzz("Refactor using functions");
 
 // Compare results
 const droneResult = claudeDrone.getMessages();
@@ -1094,7 +1118,7 @@ interface Metrics {
   dronesHatched: Counter;
   dronesRetired: Counter;
   buzzSent: Counter;
-  toolExecutions: Counter<{ tool: string; status: 'success' | 'error' }>;
+  toolExecutions: Counter<{ tool: string; status: "success" | "error" }>;
 
   // Gauges
   activeDrones: Gauge;
@@ -1102,7 +1126,7 @@ interface Metrics {
   // Histograms
   buzzDuration: Histogram;
   toolDuration: Histogram<{ tool: string }>;
-  tokenUsage: Histogram<{ type: 'input' | 'output' }>;
+  tokenUsage: Histogram<{ type: "input" | "output" }>;
 
   // Cost tracking
   costTotal: Counter<{ model: string }>;
@@ -1112,14 +1136,14 @@ interface Metrics {
 const colony = new AIColony({
   metrics: {
     enabled: true,
-    prefix: 'hyperhive_',
+    prefix: "hyperhive_",
   },
 });
 
 // Access metrics
 const metrics = colony.getMetrics();
-console.log('Active drones:', metrics.activeDrones.get());
-console.log('Total cost:', metrics.costTotal.get());
+console.log("Active drones:", metrics.activeDrones.get());
+console.log("Total cost:", metrics.costTotal.get());
 ```
 
 ---
@@ -1129,18 +1153,18 @@ console.log('Total cost:', metrics.costTotal.get());
 ```typescript
 // Package: @hyperhive/observability-prometheus
 
-import { PrometheusExporter } from '@hyperhive/observability-prometheus';
+import { PrometheusExporter } from "@hyperhive/observability-prometheus";
 
 const colony = new AIColony({
   metrics: new PrometheusExporter({
     port: 9090,
-    path: '/metrics',
-    prefix: 'hyperhive_',
+    path: "/metrics",
+    prefix: "hyperhive_",
   }),
 });
 
 // Or integrate with existing Prometheus registry
-import { Registry } from 'prom-client';
+import { Registry } from "prom-client";
 
 const registry = new Registry();
 const colony = new AIColony({
@@ -1148,8 +1172,8 @@ const colony = new AIColony({
 });
 
 // Expose with your app
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", registry.contentType);
   res.end(await registry.metrics());
 });
 ```
@@ -1200,15 +1224,15 @@ hyperhive_cost_usd_total{model="sonnet"} 125.50
 ```typescript
 // Package: @hyperhive/observability-otel
 
-import { OTelPlugin } from '@hyperhive/observability-otel';
+import { OTelPlugin } from "@hyperhive/observability-otel";
 
 const colony = new AIColony({
   plugins: [
     new OTelPlugin({
-      serviceName: 'my-app',
+      serviceName: "my-app",
       // Optional: custom exporter
       exporter: new OTLPTraceExporter({
-        url: 'http://jaeger:4318/v1/traces',
+        url: "http://jaeger:4318/v1/traces",
       }),
     }),
   ],
@@ -1248,11 +1272,13 @@ Trace: drone:hatch
 // Built into core, configurable
 const colony = new AIColony({
   logging: {
-    level: 'info', // 'debug' | 'info' | 'warn' | 'error'
-    format: 'json', // 'json' | 'pretty'
+    level: "info", // 'debug' | 'info' | 'warn' | 'error'
+    format: "json", // 'json' | 'pretty'
 
     // Optional: custom logger
-    logger: pino({ /* ... */ }),
+    logger: pino({
+      /* ... */
+    }),
   },
 });
 ```
@@ -1331,20 +1357,17 @@ Features for running Claude safely in multi-tenant or untrusted environments.
 
 ```typescript
 const claudeDrone = await colony.hatch({
-  cwd: '/projects/user-123/app',
+  cwd: "/projects/user-123/app",
 
   security: {
     // Restrict file access to these paths only
     allowedPaths: [
-      '/projects/user-123',
-      '/shared/libraries', // Read-only shared resources
+      "/projects/user-123",
+      "/shared/libraries", // Read-only shared resources
     ],
 
     // Block specific paths even within allowed paths
-    blockedPaths: [
-      '/projects/user-123/.env',
-      '/projects/user-123/secrets',
-    ],
+    blockedPaths: ["/projects/user-123/.env", "/projects/user-123/secrets"],
 
     // Block dangerous command patterns
     blockedCommands: [
@@ -1396,14 +1419,14 @@ const colony = new AIColony({
       });
 
       // Modify input
-      if (tool === 'Bash' && input.command) {
+      if (tool === "Bash" && input.command) {
         // Add timeout to all commands
         input.command = `timeout 60 ${input.command}`;
       }
 
       // Block tool (throw to prevent execution)
-      if (tool === 'Write' && input.path?.includes('.env')) {
-        throw new SecurityError('Cannot write to .env files');
+      if (tool === "Write" && input.path?.includes(".env")) {
+        throw new SecurityError("Cannot write to .env files");
       }
 
       // Return modified input (or original)
@@ -1413,7 +1436,7 @@ const colony = new AIColony({
     // Intercept after tool execution
     afterToolUse: async (tool, input, result, drone) => {
       // Redact sensitive data from output
-      if (typeof result === 'string') {
+      if (typeof result === "string") {
         result = redactSecrets(result);
       }
 
@@ -1433,16 +1456,16 @@ For running the library in Docker while executing tools on the host.
 // Package: @hyperhive/security-executor
 
 // In Docker container (Colony service)
-import { AIColony } from '@hyperhive/colony';
-import { RemoteExecutor } from '@hyperhive/security-executor';
+import { AIColony } from "@hyperhive/colony";
+import { RemoteExecutor } from "@hyperhive/security-executor";
 
 const colony = new AIColony({
   executor: new RemoteExecutor({
-    url: 'http://host.docker.internal:3101',
+    url: "http://host.docker.internal:3101",
     secret: process.env.EXECUTOR_SECRET,
 
     // Which tools to route remotely
-    tools: ['Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep'],
+    tools: ["Bash", "Read", "Write", "Edit", "Glob", "Grep"],
 
     // Timeout for executor requests
     timeout: 120_000,
@@ -1450,22 +1473,25 @@ const colony = new AIColony({
 });
 
 // On host machine (Executor service)
-import { ExecutorServer } from '@hyperhive/security-executor/server';
+import { ExecutorServer } from "@hyperhive/security-executor/server";
 
 const executor = new ExecutorServer({
   port: 3101,
-  host: '127.0.0.1', // Localhost only
+  host: "127.0.0.1", // Localhost only
   secret: process.env.EXECUTOR_SECRET,
 
   // Security settings
-  allowedPaths: ['/projects'],
-  blockedCommands: [/* ... */],
+  allowedPaths: ["/projects"],
+  blockedCommands: [
+    /* ... */
+  ],
 });
 
 await executor.start();
 ```
 
 **Architecture:**
+
 ```
 ┌─────────────────────────────────────────┐
 │         Docker Container                 │
@@ -1504,29 +1530,27 @@ Run tools in isolated containers for maximum security.
 ```typescript
 // Package: @hyperhive/security-docker
 
-import { DockerSandbox } from '@hyperhive/security-docker';
+import { DockerSandbox } from "@hyperhive/security-docker";
 
 const claudeDrone = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
 
   sandbox: new DockerSandbox({
     // Base image with tools
-    image: 'node:22-bookworm',
+    image: "node:22-bookworm",
 
     // Resource limits
-    memory: '2g',
+    memory: "2g",
     cpus: 2,
 
     // Timeout
     timeout: 300_000, // 5 minutes
 
     // Network access
-    network: 'none', // or 'bridge' for internet access
+    network: "none", // or 'bridge' for internet access
 
     // Mount project read-write
-    mounts: [
-      { source: '/project', target: '/workspace', readonly: false },
-    ],
+    mounts: [{ source: "/project", target: "/workspace", readonly: false }],
 
     // Additional packages to install
     setup: `
@@ -1537,7 +1561,7 @@ const claudeDrone = await colony.hatch({
 });
 
 // All tools now execute inside container
-await claudeDrone.buzz('Run the tests and fix any failures');
+await claudeDrone.buzz("Run the tests and fix any failures");
 ```
 
 ---
@@ -1547,14 +1571,14 @@ await claudeDrone.buzz('Run the tests and fix any failures');
 ```typescript
 // Package: @hyperhive/security-e2b
 
-import { E2BSandbox } from '@hyperhive/security-e2b';
+import { E2BSandbox } from "@hyperhive/security-e2b";
 
 const claudeDrone = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
 
   sandbox: new E2BSandbox({
     apiKey: process.env.E2B_API_KEY,
-    template: 'node-22', // Pre-built template
+    template: "node-22", // Pre-built template
     timeout: 300_000,
   }),
 });
@@ -1571,30 +1595,32 @@ Coordinate multiple Claude sessions for complex workflows.
 ```typescript
 // Create a pool of similar drones
 const reviewerPool = colony.createPool({
-  name: 'code-reviewers',
+  name: "code-reviewers",
   size: 3,
 
   // Shared configuration
   config: {
-    systemPrompt: templates.codeReviewer({ strictness: 'high' }),
-    tools: ['Read', 'Grep', 'Glob'],
-    model: 'sonnet',
+    systemPrompt: templates.codeReviewer({ strictness: "high" }),
+    tools: ["Read", "Grep", "Glob"],
+    model: "sonnet",
   },
 
   // Pool behavior
-  strategy: 'round-robin', // or 'least-busy', 'random'
+  strategy: "round-robin", // or 'least-busy', 'random'
   maxQueueSize: 100,
   queueTimeout: 60_000,
 });
 
 // Distribute work across pool
-const files = ['auth.ts', 'api.ts', 'db.ts', 'utils.ts'];
+const files = ["auth.ts", "api.ts", "db.ts", "utils.ts"];
 
 const results = await Promise.all(
-  files.map(file => reviewerPool.run({
-    cwd: '/project',
-    prompt: `Review ${file} for security issues`,
-  }))
+  files.map((file) =>
+    reviewerPool.run({
+      cwd: "/project",
+      prompt: `Review ${file} for security issues`,
+    })
+  )
 );
 
 // Pool stats
@@ -1614,53 +1640,53 @@ Define multi-step workflows with dependencies, retries, and error handling.
 ```typescript
 // Package: @hyperhive/orchestration-workflows
 
-import { Workflow, Step } from '@hyperhive/orchestration-workflows';
+import { Workflow, Step } from "@hyperhive/orchestration-workflows";
 
 const deployWorkflow = new Workflow({
-  name: 'deploy-to-production',
+  name: "deploy-to-production",
 
   steps: [
     new Step({
-      id: 'lint',
-      name: 'Run Linter',
-      prompt: 'Run the linter and fix any issues automatically',
-      tools: ['Read', 'Edit', 'Bash'],
+      id: "lint",
+      name: "Run Linter",
+      prompt: "Run the linter and fix any issues automatically",
+      tools: ["Read", "Edit", "Bash"],
       retries: 2,
     }),
 
     new Step({
-      id: 'test',
-      name: 'Run Tests',
-      prompt: 'Run all tests. If any fail, analyze and fix them.',
-      tools: ['Read', 'Edit', 'Bash'],
+      id: "test",
+      name: "Run Tests",
+      prompt: "Run all tests. If any fail, analyze and fix them.",
+      tools: ["Read", "Edit", "Bash"],
       retries: 3,
-      dependsOn: ['lint'],
+      dependsOn: ["lint"],
     }),
 
     new Step({
-      id: 'security',
-      name: 'Security Scan',
-      prompt: 'Run security scan and fix any critical vulnerabilities',
-      tools: ['Read', 'Edit', 'Bash', 'WebSearch'],
-      model: 'opus', // Use more capable model
-      dependsOn: ['lint'],
+      id: "security",
+      name: "Security Scan",
+      prompt: "Run security scan and fix any critical vulnerabilities",
+      tools: ["Read", "Edit", "Bash", "WebSearch"],
+      model: "opus", // Use more capable model
+      dependsOn: ["lint"],
       // Runs in parallel with 'test'
     }),
 
     new Step({
-      id: 'build',
-      name: 'Build',
-      prompt: 'Build the project for production',
-      tools: ['Bash'],
-      dependsOn: ['test', 'security'], // Wait for both
+      id: "build",
+      name: "Build",
+      prompt: "Build the project for production",
+      tools: ["Bash"],
+      dependsOn: ["test", "security"], // Wait for both
     }),
 
     new Step({
-      id: 'deploy',
-      name: 'Deploy',
-      prompt: 'Deploy to production environment',
-      tools: ['Bash'],
-      dependsOn: ['build'],
+      id: "deploy",
+      name: "Deploy",
+      prompt: "Deploy to production environment",
+      tools: ["Bash"],
+      dependsOn: ["build"],
       // Requires manual approval
       requiresApproval: true,
     }),
@@ -1678,34 +1704,34 @@ const deployWorkflow = new Workflow({
 
 // Execute workflow
 const run = await deployWorkflow.execute({
-  cwd: '/project',
-  metadata: { deployedBy: 'user-123' },
+  cwd: "/project",
+  metadata: { deployedBy: "user-123" },
 });
 
 // Listen to events
-run.on('step:start', ({ step }) => {
+run.on("step:start", ({ step }) => {
   console.log(`Starting: ${step.name}`);
 });
 
-run.on('step:complete', ({ step, result }) => {
+run.on("step:complete", ({ step, result }) => {
   console.log(`Completed: ${step.name}`);
 });
 
-run.on('approval:required', async ({ step }) => {
+run.on("approval:required", async ({ step }) => {
   // Show approval UI
   const approved = await getApproval(step);
   if (approved) {
     run.approve(step.id);
   } else {
-    run.reject(step.id, 'Rejected by user');
+    run.reject(step.id, "Rejected by user");
   }
 });
 
-run.on('complete', ({ results }) => {
-  console.log('Workflow completed!', results);
+run.on("complete", ({ results }) => {
+  console.log("Workflow completed!", results);
 });
 
-run.on('failed', ({ step, error }) => {
+run.on("failed", ({ step, error }) => {
   console.error(`Workflow failed at ${step.name}:`, error);
 });
 
@@ -1732,24 +1758,24 @@ Coordinate multiple specialized drones working together.
 ```typescript
 // Define specialized drones
 const architect = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   systemPrompt: `You are a software architect. You design systems and create implementation plans.
                  You do NOT write code - you create detailed specifications for developers.`,
-  tools: ['Read', 'Glob', 'Grep'],
+  tools: ["Read", "Glob", "Grep"],
 });
 
 const developer = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   systemPrompt: `You are a senior developer. You implement features based on specifications.
                  Follow the architect's plan exactly.`,
-  tools: ['Read', 'Write', 'Edit', 'Bash'],
+  tools: ["Read", "Write", "Edit", "Bash"],
 });
 
 const reviewer = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   systemPrompt: `You are a code reviewer. Review code for bugs, security issues, and best practices.
                  Be thorough but constructive.`,
-  tools: ['Read', 'Grep'],
+  tools: ["Read", "Grep"],
 });
 
 // Coordinate
@@ -1775,10 +1801,9 @@ async function buildFeature(requirement: string) {
   `);
 
   // 4. Check if approved
-  if (review.toLowerCase().includes('approved') ||
-      !review.toLowerCase().includes('critical')) {
+  if (review.toLowerCase().includes("approved") || !review.toLowerCase().includes("critical")) {
     // 5. Developer addresses feedback if any
-    if (review.toLowerCase().includes('suggestion')) {
+    if (review.toLowerCase().includes("suggestion")) {
       await developer.buzz(`Address this feedback: ${review}`);
     }
     return { success: true, plan, review };
@@ -1789,7 +1814,7 @@ async function buildFeature(requirement: string) {
   }
 }
 
-const result = await buildFeature('Add user authentication with JWT');
+const result = await buildFeature("Add user authentication with JWT");
 ```
 
 ---
@@ -1799,51 +1824,51 @@ const result = await buildFeature('Add user authentication with JWT');
 ```typescript
 // Package: @hyperhive/orchestration-swarm
 
-import { DroneSwarm } from '@hyperhive/orchestration-swarm';
+import { DroneSwarm } from "@hyperhive/orchestration-swarm";
 
 const swarm = new DroneSwarm();
 
 // Define drones
 const planner = swarm.createDrone({
-  name: 'planner',
-  systemPrompt: 'You create implementation plans...',
-  tools: ['Read', 'Grep'],
+  name: "planner",
+  systemPrompt: "You create implementation plans...",
+  tools: ["Read", "Grep"],
 
   // Can send messages to these drones
-  canMessageTo: ['developer', 'reviewer'],
+  canMessageTo: ["developer", "reviewer"],
 });
 
 const developer = swarm.createDrone({
-  name: 'developer',
-  systemPrompt: 'You implement features...',
-  tools: ['Read', 'Write', 'Edit', 'Bash'],
-  canMessageTo: ['reviewer', 'planner'],
+  name: "developer",
+  systemPrompt: "You implement features...",
+  tools: ["Read", "Write", "Edit", "Bash"],
+  canMessageTo: ["reviewer", "planner"],
 });
 
 const reviewer = swarm.createDrone({
-  name: 'reviewer',
-  systemPrompt: 'You review code...',
-  tools: ['Read', 'Grep'],
-  canMessageTo: ['developer', 'planner'],
+  name: "reviewer",
+  systemPrompt: "You review code...",
+  tools: ["Read", "Grep"],
+  canMessageTo: ["developer", "planner"],
 });
 
 // Message passing
-planner.on('message:out', ({ to, content }) => {
+planner.on("message:out", ({ to, content }) => {
   console.log(`Planner -> ${to}: ${content}`);
 });
 
 // Start with initial prompt
 await swarm.run({
-  cwd: '/project',
-  initialDrone: 'planner',
-  initialPrompt: 'Design and implement a caching system',
+  cwd: "/project",
+  initialDrone: "planner",
+  initialPrompt: "Design and implement a caching system",
 
   // Max iterations before stopping
   maxIterations: 10,
 
   // Stop condition
   stopWhen: (messages) => {
-    return messages.some(m => m.content.includes('TASK_COMPLETE'));
+    return messages.some((m) => m.content.includes("TASK_COMPLETE"));
   },
 });
 ```
@@ -1859,61 +1884,56 @@ Tools to make developing with Hyperhive easier.
 ```typescript
 // Package: @hyperhive/tools-testing
 
-import { MockColony, createMockDrone } from '@hyperhive/tools-testing';
+import { MockColony, createMockDrone } from "@hyperhive/tools-testing";
 
-describe('My feature', () => {
+describe("My feature", () => {
   let colony: MockColony;
 
   beforeEach(() => {
     colony = new MockColony();
   });
 
-  it('handles code review', async () => {
+  it("handles code review", async () => {
     // Mock specific prompt responses
-    colony.mockBuzz('Review the auth module', {
-      messages: [
-        { role: 'assistant', content: 'I found 3 issues...' },
-      ],
-      tools: [
-        { tool: 'Read', input: { path: 'auth.ts' }, result: 'file contents...' },
-      ],
+    colony.mockBuzz("Review the auth module", {
+      messages: [{ role: "assistant", content: "I found 3 issues..." }],
+      tools: [{ tool: "Read", input: { path: "auth.ts" }, result: "file contents..." }],
     });
 
-    const drone = await colony.hatch({ cwd: '/test' });
-    await drone.buzz('Review the auth module');
+    const drone = await colony.hatch({ cwd: "/test" });
+    await drone.buzz("Review the auth module");
 
     const messages = drone.getMessages();
     expect(messages).toHaveLength(1);
-    expect(messages[0].content).toContain('3 issues');
+    expect(messages[0].content).toContain("3 issues");
   });
 
-  it('handles errors', async () => {
-    colony.mockBuzz('Delete everything', {
-      error: new Error('Dangerous operation blocked'),
+  it("handles errors", async () => {
+    colony.mockBuzz("Delete everything", {
+      error: new Error("Dangerous operation blocked"),
     });
 
-    const drone = await colony.hatch({ cwd: '/test' });
+    const drone = await colony.hatch({ cwd: "/test" });
 
-    await expect(drone.buzz('Delete everything'))
-      .rejects.toThrow('Dangerous operation blocked');
+    await expect(drone.buzz("Delete everything")).rejects.toThrow("Dangerous operation blocked");
   });
 
-  it('verifies tool usage', async () => {
-    colony.mockBuzz('Fix the bug', {
-      messages: [{ role: 'assistant', content: 'Fixed!' }],
+  it("verifies tool usage", async () => {
+    colony.mockBuzz("Fix the bug", {
+      messages: [{ role: "assistant", content: "Fixed!" }],
       tools: [
-        { tool: 'Read', input: { path: 'bug.ts' } },
-        { tool: 'Edit', input: { path: 'bug.ts', oldString: 'bug', newString: 'fix' } },
+        { tool: "Read", input: { path: "bug.ts" } },
+        { tool: "Edit", input: { path: "bug.ts", oldString: "bug", newString: "fix" } },
       ],
     });
 
-    const drone = await colony.hatch({ cwd: '/test' });
-    await drone.buzz('Fix the bug');
+    const drone = await colony.hatch({ cwd: "/test" });
+    await drone.buzz("Fix the bug");
 
     // Verify tools were called
     expect(colony.getToolCalls()).toEqual([
-      expect.objectContaining({ tool: 'Read', input: { path: 'bug.ts' } }),
-      expect.objectContaining({ tool: 'Edit' }),
+      expect.objectContaining({ tool: "Read", input: { path: "bug.ts" } }),
+      expect.objectContaining({ tool: "Edit" }),
     ]);
   });
 });
@@ -1926,21 +1946,21 @@ describe('My feature', () => {
 ```typescript
 // Record a drone session
 const claudeDrone = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   recording: {
     enabled: true,
     includeTiming: true, // Record delays between events
   },
 });
 
-await claudeDrone.buzz('Implement user authentication');
+await claudeDrone.buzz("Implement user authentication");
 
 // Save recording
 const recording = claudeDrone.getRecording();
-await fs.writeFile('auth-drone.json', JSON.stringify(recording, null, 2));
+await fs.writeFile("auth-drone.json", JSON.stringify(recording, null, 2));
 
 // Replay later
-const replayed = await colony.replayDrone('./auth-drone.json', {
+const replayed = await colony.replayDrone("./auth-drone.json", {
   speed: 2, // 2x speed
   onEvent: (event) => {
     console.log(event.type, event.timestamp);
@@ -1961,7 +1981,9 @@ const replayed = await colony.replayDrone('./auth-drone.json', {
   "version": "1.0",
   "droneId": "drone_abc123",
   "cwd": "/project",
-  "config": { /* ... */ },
+  "config": {
+    /* ... */
+  },
   "startedAt": "2025-01-15T10:30:00Z",
   "events": [
     {
@@ -1988,7 +2010,7 @@ const replayed = await colony.replayDrone('./auth-drone.json', {
       "type": "tool:end",
       "timestamp": 3100,
       "data": { "tool": "Read", "result": "..." }
-    },
+    }
     // ...
   ]
 }
@@ -2047,7 +2069,7 @@ Intelligent context window management for large codebases.
 ```typescript
 // Package: @hyperhive/ai-context
 
-import { ContextManager } from '@hyperhive/ai-context';
+import { ContextManager } from "@hyperhive/ai-context";
 
 const context = new ContextManager({
   // Automatic context selection
@@ -2065,8 +2087,8 @@ const context = new ContextManager({
   // RAG for large codebases
   rag: {
     enabled: true,
-    provider: 'chroma', // or 'pinecone', 'weaviate'
-    embeddingModel: 'text-embedding-3-small',
+    provider: "chroma", // or 'pinecone', 'weaviate'
+    embeddingModel: "text-embedding-3-small",
 
     // Index settings
     chunkSize: 1000,
@@ -2082,14 +2104,14 @@ const context = new ContextManager({
 
   // Priority rules
   priority: [
-    { pattern: '**/*.test.ts', weight: 0.5 }, // Tests are less important
-    { pattern: '**/README.md', weight: 0.3 },
-    { pattern: '**/node_modules/**', weight: 0 }, // Exclude
+    { pattern: "**/*.test.ts", weight: 0.5 }, // Tests are less important
+    { pattern: "**/README.md", weight: 0.3 },
+    { pattern: "**/node_modules/**", weight: 0 }, // Exclude
   ],
 });
 
 const claudeDrone = await colony.hatch({
-  cwd: '/large-monorepo',
+  cwd: "/large-monorepo",
   context,
 });
 
@@ -2109,21 +2131,21 @@ Persistent memory across drones.
 ```typescript
 // Package: @hyperhive/ai-memory
 
-import { SemanticMemory } from '@hyperhive/ai-memory';
+import { SemanticMemory } from "@hyperhive/ai-memory";
 
 const memory = new SemanticMemory({
   // Storage backend
-  store: new PostgresStore({ connectionString: '...' }),
+  store: new PostgresStore({ connectionString: "..." }),
 
   // Embedding model
-  embeddingModel: 'text-embedding-3-small',
+  embeddingModel: "text-embedding-3-small",
 
   // What to remember
   remember: {
-    decisions: true,     // "We decided to use JWT because..."
-    patterns: true,      // "This codebase uses repository pattern"
-    preferences: true,   // "User prefers functional style"
-    errors: true,        // "This approach failed because..."
+    decisions: true, // "We decided to use JWT because..."
+    patterns: true, // "This codebase uses repository pattern"
+    preferences: true, // "User prefers functional style"
+    errors: true, // "This approach failed because..."
   },
 
   // Retrieval settings
@@ -2134,7 +2156,7 @@ const memory = new SemanticMemory({
 });
 
 const claudeDrone = await colony.hatch({
-  cwd: '/project',
+  cwd: "/project",
   memory,
 });
 
@@ -2145,12 +2167,12 @@ const claudeDrone = await colony.hatch({
 
 // Manual memory operations
 await memory.remember({
-  type: 'decision',
-  content: 'Using PostgreSQL instead of MongoDB for ACID compliance',
-  context: { project: '/project', date: new Date() },
+  type: "decision",
+  content: "Using PostgreSQL instead of MongoDB for ACID compliance",
+  context: { project: "/project", date: new Date() },
 });
 
-const relevant = await memory.recall('database choice');
+const relevant = await memory.recall("database choice");
 ```
 
 ---
@@ -2161,7 +2183,7 @@ Define reusable, specialized drone configurations.
 
 ```typescript
 // Define drone type
-colony.defineDroneType('security-auditor', {
+colony.defineDroneType("security-auditor", {
   systemPrompt: `You are a security expert specializing in web application security.
 
                  Your responsibilities:
@@ -2177,13 +2199,13 @@ colony.defineDroneType('security-auditor', {
                  3. Detailed explanation of the vulnerability
                  4. Recommended fix with code example`,
 
-  tools: ['Read', 'Grep', 'Glob', 'WebSearch'],
-  model: 'opus',
+  tools: ["Read", "Grep", "Glob", "WebSearch"],
+  model: "opus",
 
   // Preprocessing
   beforeBuzz: async (prompt, drone) => {
     // Always include security context
-    const securityFiles = await glob('**/*.{env,key,pem,secret}*', { cwd: drone.cwd });
+    const securityFiles = await glob("**/*.{env,key,pem,secret}*", { cwd: drone.cwd });
     return `${prompt}\n\nNote: Found ${securityFiles.length} potential secret files.`;
   },
 
@@ -2197,8 +2219,8 @@ colony.defineDroneType('security-auditor', {
   // Validation
   validateResponse: async (response) => {
     // Ensure response includes severity ratings
-    if (!response.includes('Severity:')) {
-      return { valid: false, reason: 'Missing severity ratings' };
+    if (!response.includes("Severity:")) {
+      return { valid: false, reason: "Missing severity ratings" };
     }
     return { valid: true };
   },
@@ -2206,11 +2228,11 @@ colony.defineDroneType('security-auditor', {
 
 // Use drone type
 const auditor = await colony.hatch({
-  cwd: '/project',
-  droneType: 'security-auditor',
+  cwd: "/project",
+  droneType: "security-auditor",
 });
 
-await auditor.buzz('Perform a comprehensive security audit');
+await auditor.buzz("Perform a comprehensive security audit");
 ```
 
 ---
@@ -2222,35 +2244,39 @@ Chain multiple buzzes with data flow.
 ```typescript
 // Package: @hyperhive/ai-chains
 
-import { Chain, buzz, extract, condition } from '@hyperhive/ai-chains';
+import { Chain, buzz, extract, condition } from "@hyperhive/ai-chains";
 
 const refactorChain = new Chain()
   // Step 1: Analyze current code
-  .add(buzz('Analyze {file} and identify code smells'))
-  .add(extract({
-    codeSmells: 'array of identified issues',
-    complexity: 'number from 1-10',
-  }))
+  .add(buzz("Analyze {file} and identify code smells"))
+  .add(
+    extract({
+      codeSmells: "array of identified issues",
+      complexity: "number from 1-10",
+    })
+  )
 
   // Step 2: Conditional - only refactor if complex
-  .add(condition(
-    ({ complexity }) => complexity > 5,
-    // If complex, refactor
-    buzz('Refactor {file} to address: {codeSmells}'),
-    // If simple, skip
-    buzz('Code is already clean, no refactoring needed'),
-  ))
+  .add(
+    condition(
+      ({ complexity }) => complexity > 5,
+      // If complex, refactor
+      buzz("Refactor {file} to address: {codeSmells}"),
+      // If simple, skip
+      buzz("Code is already clean, no refactoring needed")
+    )
+  )
 
   // Step 3: Verify
-  .add(buzz('Run tests and verify the refactoring works'));
+  .add(buzz("Run tests and verify the refactoring works"));
 
 // Execute chain
 const result = await refactorChain.execute(claudeDrone, {
-  file: 'src/complex-module.ts',
+  file: "src/complex-module.ts",
 });
 
-console.log(result.codeSmells);  // ['God class', 'Deep nesting']
-console.log(result.complexity);   // 8
+console.log(result.codeSmells); // ['God class', 'Deep nesting']
+console.log(result.complexity); // 8
 ```
 
 ---
@@ -2262,7 +2288,7 @@ Drones that learn from feedback.
 ```typescript
 // Package: @hyperhive/ai-learning
 
-import { LearningDrone } from '@hyperhive/ai-learning';
+import { LearningDrone } from "@hyperhive/ai-learning";
 
 const learner = new LearningDrone({
   colony,
@@ -2271,9 +2297,9 @@ const learner = new LearningDrone({
   feedback: {
     // Automatic feedback from tool results
     auto: {
-      testFailures: true,  // Learn from test failures
-      lintErrors: true,    // Learn from lint errors
-      buildErrors: true,   // Learn from build errors
+      testFailures: true, // Learn from test failures
+      lintErrors: true, // Learn from lint errors
+      buildErrors: true, // Learn from build errors
     },
 
     // Manual feedback
@@ -2281,16 +2307,16 @@ const learner = new LearningDrone({
   },
 
   // Learning storage
-  store: new PostgresStore({ connectionString: '...' }),
+  store: new PostgresStore({ connectionString: "..." }),
 });
 
-const claudeDrone = await learner.hatch({ cwd: '/project' });
+const claudeDrone = await learner.hatch({ cwd: "/project" });
 
 // After completion, provide feedback
 await claudeDrone.feedback({
   rating: 4, // 1-5
-  comments: 'Good solution but missed edge case with empty arrays',
-  correctOutput: '// Example of correct handling...',
+  comments: "Good solution but missed edge case with empty arrays",
+  correctOutput: "// Example of correct handling...",
 });
 
 // Drone learns from feedback and improves over time
@@ -2376,16 +2402,16 @@ hyperhive/
 
 ## Success Metrics
 
-| Metric | Target |
-|--------|--------|
-| npm weekly downloads | 10,000+ |
-| GitHub stars | 1,000+ |
-| Framework integrations | 5+ |
-| Storage adapters | 3+ |
-| Community plugins | 10+ |
-| Documentation coverage | 100% |
-| Test coverage | 90%+ |
-| TypeScript coverage | 100% |
+| Metric                 | Target  |
+| ---------------------- | ------- |
+| npm weekly downloads   | 10,000+ |
+| GitHub stars           | 1,000+  |
+| Framework integrations | 5+      |
+| Storage adapters       | 3+      |
+| Community plugins      | 10+     |
+| Documentation coverage | 100%    |
+| Test coverage          | 90%+    |
+| TypeScript coverage    | 100%    |
 
 ---
 
@@ -2412,6 +2438,7 @@ hyperhive/
 ```
 
 **Hyperhive** occupies the unique position of:
+
 - More abstraction than raw SDK (easier to use)
 - More flexibility than standalone servers (composable)
 - More portable than framework-specific libraries (works everywhere)

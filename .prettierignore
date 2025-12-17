@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+
+# Package manager
+pnpm-lock.yaml
+
+# Turborepo
+.turbo/
+
+# Changesets
+.changeset/*.md
+!.changeset/README.md
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store

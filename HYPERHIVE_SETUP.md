@@ -6,25 +6,25 @@
 
 Hyperhive uses bee-inspired naming throughout the codebase:
 
-| Concept | Bee Term | Description |
-|---------|----------|-------------|
-| Main Entry Point | **AIColony** | The colony controller - manages all drones across providers |
-| LLM Session | **Drone** | Autonomous agent that executes tasks (e.g., `claudeDrone`, `gptDrone`) |
-| Send Prompt | **buzz()** | How drones communicate - sending prompts to the LLM |
-| Configuration | **Comb** | Honeycomb structure for organized configuration storage |
-| Events | **Waggle** | Waggle dance - how bees communicate information |
-| Plugins | **Propolis** | Substance bees use to extend/seal the hive |
+| Concept          | Bee Term     | Description                                                            |
+| ---------------- | ------------ | ---------------------------------------------------------------------- |
+| Main Entry Point | **AIColony** | The colony controller - manages all drones across providers            |
+| LLM Session      | **Drone**    | Autonomous agent that executes tasks (e.g., `claudeDrone`, `gptDrone`) |
+| Send Prompt      | **buzz()**   | How drones communicate - sending prompts to the LLM                    |
+| Configuration    | **Comb**     | Honeycomb structure for organized configuration storage                |
+| Events           | **Waggle**   | Waggle dance - how bees communicate information                        |
+| Plugins          | **Propolis** | Substance bees use to extend/seal the hive                             |
 
 ## Overview
 
-| Aspect | Choice | Rationale |
-|--------|--------|-----------|
-| **Build Orchestrator** | Turborepo | Native Changesets support, simpler than NX, excellent caching |
-| **Package Manager** | pnpm | Faster, disk-efficient, great monorepo support |
-| **Versioning** | Changesets (independent) | Each package versions separately |
-| **Remote Cache** | Vercel | Zero infrastructure, free tier, seamless Turborepo integration |
-| **Release Auth** | GitHub App | Can trigger workflows, better security |
-| **Publishing** | npm OIDC | Trusted publishing without storing tokens |
+| Aspect                 | Choice                   | Rationale                                                      |
+| ---------------------- | ------------------------ | -------------------------------------------------------------- |
+| **Build Orchestrator** | Turborepo                | Native Changesets support, simpler than NX, excellent caching  |
+| **Package Manager**    | pnpm                     | Faster, disk-efficient, great monorepo support                 |
+| **Versioning**         | Changesets (independent) | Each package versions separately                               |
+| **Remote Cache**       | Vercel                   | Zero infrastructure, free tier, seamless Turborepo integration |
+| **Release Auth**       | GitHub App               | Can trigger workflows, better security                         |
+| **Publishing**         | npm OIDC                 | Trusted publishing without storing tokens                      |
 
 ### Package Groups
 
@@ -82,21 +82,21 @@ packages/
 
 ```yaml
 # GitHub Configuration
-GITHUB_ORG: ________________          # Your GitHub organization name
-GITHUB_REPO: ________________         # Repository name (e.g., "Hyperhive")
-GITHUB_REPO_URL: ________________     # Full URL (e.g., "github.com/YourOrg/YourRepo")
+GITHUB_ORG: ________________ # Your GitHub organization name
+GITHUB_REPO: ________________ # Repository name (e.g., "Hyperhive")
+GITHUB_REPO_URL: ________________ # Full URL (e.g., "github.com/YourOrg/YourRepo")
 
 # npm Configuration
-NPM_ORG: ________________             # npm organization name (e.g., "hyperhive")
-NPM_SCOPE: ________________           # npm scope with @ (e.g., "@hyperhive")
+NPM_ORG: ________________ # npm organization name (e.g., "hyperhive")
+NPM_SCOPE: ________________ # npm scope with @ (e.g., "@hyperhive")
 
 # Vercel Configuration (for Turborepo Remote Cache)
-TURBO_TEAM: ________________          # Vercel team slug
-TURBO_TOKEN: ________________         # Vercel access token (keep secret!)
+TURBO_TEAM: ________________ # Vercel team slug
+TURBO_TOKEN: ________________ # Vercel access token (keep secret!)
 
 # GitHub App Configuration (for Releases)
-RELEASE_APP_ID: ________________      # GitHub App ID number
-RELEASE_APP_NAME: ________________    # GitHub App name you chose
+RELEASE_APP_ID: ________________ # GitHub App ID number
+RELEASE_APP_NAME: ________________ # GitHub App name you chose
 # Note: Private key will be stored as GitHub secret, not here
 ```
 
@@ -137,13 +137,13 @@ RELEASE_APP_NAME: ________________    # GitHub App name you chose
 
    > **Prompt**: Enter the values you'll use for GitHub:
 
-   | Field | Value to Enter |
-   |-------|----------------|
-   | **Provider** | GitHub Actions |
-   | **Owner** | `________________` (your GitHub org) |
-   | **Repository** | `________________` (your repo name) |
-   | **Workflow filename** | `release.yml` |
-   | **Environment** | `npm-publish` |
+   | Field                 | Value to Enter                       |
+   | --------------------- | ------------------------------------ |
+   | **Provider**          | GitHub Actions                       |
+   | **Owner**             | `________________` (your GitHub org) |
+   | **Repository**        | `________________` (your repo name)  |
+   | **Workflow filename** | `release.yml`                        |
+   | **Environment**       | `npm-publish`                        |
 
 6. Click **Add**
 7. Optionally enable **"Require provenance statements"** for enhanced security
@@ -218,6 +218,7 @@ RELEASE_APP_NAME: ________________    # GitHub App name you chose
 Navigate to `github.com/[YOUR_ORG]/[YOUR_REPO]/settings`:
 
 **General Settings:**
+
 1. Scroll to **Pull Requests** section
 2. Configure:
    - [x] Allow squash merging
@@ -228,6 +229,7 @@ Navigate to `github.com/[YOUR_ORG]/[YOUR_REPO]/settings`:
 - [ ] Pull request settings configured
 
 **Branch Protection Rules:**
+
 1. Go to **Settings → Branches**
 2. Click **Add branch protection rule**
 3. Configure:
@@ -314,18 +316,18 @@ Navigate to `github.com/[YOUR_ORG]/[YOUR_REPO]/settings/secrets/actions`:
 
 Click **New repository secret** for each:
 
-| Name | Value | Status |
-|------|-------|--------|
-| `TURBO_TOKEN` | Your Vercel token | [ ] Added |
+| Name                      | Value                          | Status    |
+| ------------------------- | ------------------------------ | --------- |
+| `TURBO_TOKEN`             | Your Vercel token              | [ ] Added |
 | `RELEASE_APP_PRIVATE_KEY` | Full contents of the .pem file | [ ] Added |
 
 #### Variables (Settings → Secrets and variables → Actions → Variables)
 
 Click **New repository variable** for each:
 
-| Name | Value | Status |
-|------|-------|--------|
-| `TURBO_TEAM` | Your Vercel team slug | [ ] Added |
+| Name             | Value                     | Status    |
+| ---------------- | ------------------------- | --------- |
+| `TURBO_TEAM`     | Your Vercel team slug     | [ ] Added |
 | `RELEASE_APP_ID` | Your GitHub App ID number | [ ] Added |
 
 ### 1.6 GitHub Environment Setup
@@ -742,11 +744,7 @@ export default {
         "revert",
       ],
     ],
-    "scope-enum": [
-      1,
-      "always",
-      ["colony", "plugin-fastify", "config", "ci", "deps", "release"],
-    ],
+    "scope-enum": [1, "always", ["colony", "plugin-fastify", "config", "ci", "deps", "release"]],
     "subject-case": [2, "always", "lower-case"],
     "subject-empty": [2, "never"],
     "type-empty": [2, "never"],
@@ -789,7 +787,7 @@ export default {
 
 #### `.changeset/README.md`
 
-```markdown
+````markdown
 # Changesets
 
 Hello and welcome! This folder has been automatically generated by `@changesets/cli`, a build tool that works with multi-package repos, or single-package repos to help you version and publish your code.
@@ -801,8 +799,10 @@ To add a changeset, run:
 ```bash
 pnpm changeset
 ```
+````
 
 This will prompt you to:
+
 1. Select which packages have changed
 2. Choose the bump type (major/minor/patch)
 3. Write a summary of the changes
@@ -810,13 +810,15 @@ This will prompt you to:
 ## Releasing
 
 When changesets are merged to main, the release workflow will:
+
 1. Create a "Version Packages" PR with version bumps
 2. When merged, publish packages to npm
 
 ## More Information
 
 See [the changesets documentation](https://github.com/changesets/changesets) for more details.
-```
+
+````
 
 ---
 
@@ -826,7 +828,7 @@ See [the changesets documentation](https://github.com/changesets/changesets) for
 
 ```bash
 pnpm lint-staged
-```
+````
 
 #### `.husky/commit-msg`
 
@@ -1000,16 +1002,7 @@ export default createConfig;
     "url": "https://github.com/Hypergamed/Hyperhive/issues"
   },
   "homepage": "https://github.com/Hypergamed/Hyperhive/tree/main/packages/colony#readme",
-  "keywords": [
-    "claude",
-    "anthropic",
-    "agent",
-    "ai",
-    "sdk",
-    "wrapper",
-    "llm",
-    "openai"
-  ],
+  "keywords": ["claude", "anthropic", "agent", "ai", "sdk", "wrapper", "llm", "openai"],
   "engines": {
     "node": ">=22.0.0"
   },
@@ -1214,7 +1207,7 @@ export interface CompleteEvent {
 
 #### `packages/colony/src/drone.ts`
 
-```typescript
+````typescript
 import { EventEmitter } from "events";
 import type {
   DroneConfig,
@@ -1248,7 +1241,9 @@ export class Drone extends EventEmitter {
 
   private _status: DroneStatus = "idle";
   private readonly _messages: AssistantMessage[] = [];
-  private readonly _config: Required<Omit<DroneConfig, "metadata">> & { metadata: Record<string, unknown> };
+  private readonly _config: Required<Omit<DroneConfig, "metadata">> & {
+    metadata: Record<string, unknown>;
+  };
   private readonly _createdAt: Date;
 
   constructor(id: string, config: DroneConfig) {
@@ -1388,11 +1383,11 @@ export class Drone extends EventEmitter {
     return super.on(event, handler);
   }
 }
-```
+````
 
 #### `packages/colony/src/colony.ts`
 
-```typescript
+````typescript
 import { EventEmitter } from "events";
 import { Drone } from "./drone.js";
 import type { ColonyConfig, DroneConfig, LLMProvider } from "./types.js";
@@ -1552,7 +1547,7 @@ export class AIColony extends EventEmitter {
     return super.on(event, handler);
   }
 }
-```
+````
 
 #### `packages/colony/src/index.ts`
 
@@ -1840,7 +1835,7 @@ describe("Drone", () => {
 
 #### `packages/colony/README.md`
 
-```markdown
+````markdown
 # @hyperhive/colony
 
 Core library for Hyperhive - an LLM Agent SDK wrapper.
@@ -1860,6 +1855,7 @@ pnpm add @hyperhive/colony
 # or
 yarn add @hyperhive/colony
 ```
+````
 
 ## Usage
 
@@ -1905,48 +1901,49 @@ await colony.retire(claudeDrone.id);
 
 ### AIColony Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `apiKey` | `string` | (required) | Your API key |
-| `provider` | `"claude" \| "openai"` | `"claude"` | LLM provider |
-| `baseUrl` | `string` | Provider default | API base URL |
-| `timeout` | `number` | `30000` | Request timeout in ms |
+| Option     | Type                   | Default          | Description           |
+| ---------- | ---------------------- | ---------------- | --------------------- |
+| `apiKey`   | `string`               | (required)       | Your API key          |
+| `provider` | `"claude" \| "openai"` | `"claude"`       | LLM provider          |
+| `baseUrl`  | `string`               | Provider default | API base URL          |
+| `timeout`  | `number`               | `30000`          | Request timeout in ms |
 
 ### Drone Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `cwd` | `string` | (required) | Working directory |
-| `model` | `"fast" \| "balanced" \| "powerful"` | `"balanced"` | Model tier |
-| `tools` | `string[]` | `[]` | Available tools |
-| `systemPrompt` | `string` | `""` | System prompt |
-| `metadata` | `Record<string, unknown>` | `{}` | Custom metadata |
+| Option         | Type                                 | Default      | Description       |
+| -------------- | ------------------------------------ | ------------ | ----------------- |
+| `cwd`          | `string`                             | (required)   | Working directory |
+| `model`        | `"fast" \| "balanced" \| "powerful"` | `"balanced"` | Model tier        |
+| `tools`        | `string[]`                           | `[]`         | Available tools   |
+| `systemPrompt` | `string`                             | `""`         | System prompt     |
+| `metadata`     | `Record<string, unknown>`            | `{}`         | Custom metadata   |
 
 ## Events
 
 ### Drone Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `message` | `AssistantMessage` | New message from the LLM |
-| `tool:start` | `ToolStartEvent` | Tool execution started |
-| `tool:end` | `ToolEndEvent` | Tool execution completed |
-| `status` | `DroneStatus` | Status changed |
-| `complete` | `CompleteEvent` | Operation completed |
-| `error` | `Error` | Error occurred |
+| Event        | Payload            | Description              |
+| ------------ | ------------------ | ------------------------ |
+| `message`    | `AssistantMessage` | New message from the LLM |
+| `tool:start` | `ToolStartEvent`   | Tool execution started   |
+| `tool:end`   | `ToolEndEvent`     | Tool execution completed |
+| `status`     | `DroneStatus`      | Status changed           |
+| `complete`   | `CompleteEvent`    | Operation completed      |
+| `error`      | `Error`            | Error occurred           |
 
 ### AIColony Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `drone:hatched` | `Drone` | New Drone hatched |
-| `drone:retired` | `string` | Drone retired (ID) |
-| `error` | `Error, Drone?` | Error occurred |
+| Event           | Payload         | Description        |
+| --------------- | --------------- | ------------------ |
+| `drone:hatched` | `Drone`         | New Drone hatched  |
+| `drone:retired` | `string`        | Drone retired (ID) |
+| `error`         | `Error, Drone?` | Error occurred     |
 
 ## License
 
 MIT
-```
+
+````
 
 ---
 
@@ -2029,7 +2026,7 @@ MIT
     "vitest": "catalog:"
   }
 }
-```
+````
 
 #### `packages/plugins/fastify/tsconfig.json`
 
@@ -2086,7 +2083,7 @@ export default defineConfig({
 
 #### `packages/plugins/fastify/src/plugin.ts`
 
-```typescript
+````typescript
 import type { FastifyPluginAsync, FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { AIColony, type ColonyConfig } from "@hyperhive/colony";
@@ -2144,7 +2141,7 @@ export const colonyPlugin = fp(colonyPluginImpl, {
   fastify: "5.x",
   name: "@hyperhive/plugin-fastify",
 });
-```
+````
 
 #### `packages/plugins/fastify/src/index.ts`
 
@@ -2236,7 +2233,7 @@ describe("colonyPlugin", () => {
 
 #### `packages/plugins/fastify/README.md`
 
-```markdown
+````markdown
 # @hyperhive/plugin-fastify
 
 Fastify plugin for Hyperhive - integrates the AIColony controller with Fastify applications.
@@ -2250,6 +2247,7 @@ pnpm add @hyperhive/plugin-fastify @hyperhive/colony fastify
 # or
 yarn add @hyperhive/plugin-fastify @hyperhive/colony fastify
 ```
+````
 
 ## Usage
 
@@ -2286,13 +2284,13 @@ await app.listen({ port: 3000 });
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `apiKey` | `string` | (required) | Your API key |
-| `provider` | `"claude" \| "openai"` | `"claude"` | LLM provider |
-| `baseUrl` | `string` | Provider default | API base URL |
-| `timeout` | `number` | `30000` | Request timeout in ms |
-| `decoratorName` | `string` | `"colony"` | Name for Fastify decorator |
+| Option          | Type                   | Default          | Description                |
+| --------------- | ---------------------- | ---------------- | -------------------------- |
+| `apiKey`        | `string`               | (required)       | Your API key               |
+| `provider`      | `"claude" \| "openai"` | `"claude"`       | LLM provider               |
+| `baseUrl`       | `string`               | Provider default | API base URL               |
+| `timeout`       | `number`               | `30000`          | Request timeout in ms      |
+| `decoratorName` | `string`               | `"colony"`       | Name for Fastify decorator |
 
 ## TypeScript
 
@@ -2311,7 +2309,8 @@ declare module "fastify" {
 ## License
 
 MIT
-```
+
+````
 
 ---
 
@@ -2374,7 +2373,7 @@ jobs:
 
       - name: Build
         run: pnpm build
-```
+````
 
 ### `.github/workflows/release.yml`
 
@@ -2668,7 +2667,7 @@ updates:
 
 #### `README.md`
 
-```markdown
+````markdown
 # Hyperhive
 
 A provider-agnostic LLM Agent SDK wrapper library for building AI-powered applications.
@@ -2681,17 +2680,17 @@ A provider-agnostic LLM Agent SDK wrapper library for building AI-powered applic
 
 Hyperhive uses bee-inspired naming:
 
-| Term | Meaning |
-|------|---------|
-| **AIColony** | The colony controller - manages all drones across providers |
-| **Drone** | Autonomous agent that executes tasks (e.g., `claudeDrone`, `gptDrone`) |
-| **buzz()** | How drones communicate - sending prompts to the LLM |
+| Term         | Meaning                                                                |
+| ------------ | ---------------------------------------------------------------------- |
+| **AIColony** | The colony controller - manages all drones across providers            |
+| **Drone**    | Autonomous agent that executes tasks (e.g., `claudeDrone`, `gptDrone`) |
+| **buzz()**   | How drones communicate - sending prompts to the LLM                    |
 
 ## Packages
 
-| Package | Description | npm |
-|---------|-------------|-----|
-| [@hyperhive/colony](./packages/colony) | Core library | [![npm](https://img.shields.io/npm/v/@hyperhive/colony.svg)](https://www.npmjs.com/package/@hyperhive/colony) |
+| Package                                                 | Description    | npm                                                                                                                           |
+| ------------------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| [@hyperhive/colony](./packages/colony)                  | Core library   | [![npm](https://img.shields.io/npm/v/@hyperhive/colony.svg)](https://www.npmjs.com/package/@hyperhive/colony)                 |
 | [@hyperhive/plugin-fastify](./packages/plugins/fastify) | Fastify plugin | [![npm](https://img.shields.io/npm/v/@hyperhive/plugin-fastify.svg)](https://www.npmjs.com/package/@hyperhive/plugin-fastify) |
 
 ## Quick Start
@@ -2705,6 +2704,7 @@ npm install @hyperhive/colony
 # With Fastify
 npm install @hyperhive/colony @hyperhive/plugin-fastify fastify
 ```
+````
 
 ### Basic Usage
 
@@ -2775,13 +2775,13 @@ pnpm test
 
 ### Scripts
 
-| Script | Description |
-|--------|-------------|
-| `pnpm build` | Build all packages |
-| `pnpm test` | Run all tests |
-| `pnpm lint` | Lint all packages |
-| `pnpm format` | Format code with Prettier |
-| `pnpm typecheck` | Run TypeScript type checking |
+| Script           | Description                       |
+| ---------------- | --------------------------------- |
+| `pnpm build`     | Build all packages                |
+| `pnpm test`      | Run all tests                     |
+| `pnpm lint`      | Lint all packages                 |
+| `pnpm format`    | Format code with Prettier         |
+| `pnpm typecheck` | Run TypeScript type checking      |
 | `pnpm changeset` | Create a changeset for versioning |
 
 ### Creating a Changeset
@@ -2793,6 +2793,7 @@ pnpm changeset
 ```
 
 Follow the prompts to:
+
 1. Select changed packages
 2. Choose version bump type (major/minor/patch)
 3. Write a summary of changes
@@ -2815,7 +2816,8 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 ## License
 
 MIT
-```
+
+````
 
 ---
 
@@ -2830,7 +2832,7 @@ cd ~/Projects/Hyperhive
 
 # Initialize git
 git init
-```
+````
 
 ### Step 2: Create All Files
 
@@ -2925,6 +2927,7 @@ git push -u origin main
 ### Release Verification
 
 1. Create a test changeset:
+
    ```bash
    pnpm changeset
    # Select @hyperhive/colony
@@ -2933,6 +2936,7 @@ git push -u origin main
    ```
 
 2. Commit and push:
+
    ```bash
    git add .
    git commit -m "chore: add test changeset"
@@ -2958,6 +2962,7 @@ git push -u origin main
 ### Issue: Husky hooks not running
 
 **Solution**:
+
 ```bash
 pnpm prepare
 chmod +x .husky/pre-commit .husky/commit-msg
@@ -2966,6 +2971,7 @@ chmod +x .husky/pre-commit .husky/commit-msg
 ### Issue: Turborepo remote cache not working
 
 **Verify**:
+
 1. `TURBO_TOKEN` and `TURBO_TEAM` are set correctly
 2. Run with verbose: `pnpm build --verbosity=2`
 3. Check Vercel dashboard for token activity
@@ -2973,6 +2979,7 @@ chmod +x .husky/pre-commit .husky/commit-msg
 ### Issue: GitHub App token not working
 
 **Verify**:
+
 1. App is installed on the repository
 2. `RELEASE_APP_ID` matches the App ID exactly
 3. `RELEASE_APP_PRIVATE_KEY` includes full PEM content with BEGIN/END lines
@@ -2981,6 +2988,7 @@ chmod +x .husky/pre-commit .husky/commit-msg
 ### Issue: npm OIDC publishing fails
 
 **Verify**:
+
 1. Trusted publisher configured on npm with exact values:
    - Owner: Your GitHub org
    - Repository: Your repo name
@@ -2992,6 +3000,7 @@ chmod +x .husky/pre-commit .husky/commit-msg
 ### Issue: Tests fail with "Cannot find module"
 
 **Solution**: Ensure build runs before test:
+
 ```bash
 pnpm build && pnpm test
 ```
@@ -3003,6 +3012,7 @@ pnpm build && pnpm test
 Use this to verify all files are created:
 
 ### Root (13 files)
+
 - [ ] `package.json`
 - [ ] `pnpm-workspace.yaml`
 - [ ] `turbo.json`
@@ -3018,23 +3028,28 @@ Use this to verify all files are created:
 - [ ] `README.md`
 
 ### Changesets (2 files)
+
 - [ ] `.changeset/config.json`
 - [ ] `.changeset/README.md`
 
 ### Husky (2 files)
+
 - [ ] `.husky/pre-commit`
 - [ ] `.husky/commit-msg`
 
 ### TypeScript Config (3 files)
+
 - [ ] `packages/configs/typescript/package.json`
 - [ ] `packages/configs/typescript/base.json`
 - [ ] `packages/configs/typescript/library.json`
 
 ### ESLint Config (2 files)
+
 - [ ] `packages/configs/eslint/package.json`
 - [ ] `packages/configs/eslint/base.js`
 
 ### Colony Package (11 files)
+
 - [ ] `packages/colony/package.json`
 - [ ] `packages/colony/tsconfig.json`
 - [ ] `packages/colony/tsup.config.ts`
@@ -3048,6 +3063,7 @@ Use this to verify all files are created:
 - [ ] `packages/colony/README.md`
 
 ### Fastify Plugin Package (8 files)
+
 - [ ] `packages/plugins/fastify/package.json`
 - [ ] `packages/plugins/fastify/tsconfig.json`
 - [ ] `packages/plugins/fastify/tsup.config.ts`
@@ -3058,6 +3074,7 @@ Use this to verify all files are created:
 - [ ] `packages/plugins/fastify/README.md`
 
 ### GitHub Workflows (5 files)
+
 - [ ] `.github/workflows/ci.yml`
 - [ ] `.github/workflows/release.yml`
 - [ ] `.github/workflows/pr-validation.yml`
@@ -3065,6 +3082,7 @@ Use this to verify all files are created:
 - [ ] `.github/workflows/dependency-review.yml`
 
 ### GitHub Config (1 file)
+
 - [ ] `.github/dependabot.yml`
 
 **Total: ~47 files**
@@ -3093,4 +3111,4 @@ When implementing this setup:
 
 ---
 
-*Document generated for Hyperhive monorepo setup. Last updated: December 2024.*
+_Document generated for Hyperhive monorepo setup. Last updated: December 2024._

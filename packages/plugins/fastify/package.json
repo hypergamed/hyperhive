@@ -1,0 +1,76 @@
+{
+  "name": "@hyperhive/plugin-fastify",
+  "version": "0.1.0",
+  "description": "Fastify plugin for Hyperhive",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "Hypergamed",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hypergamed/Hyperhive.git",
+    "directory": "packages/plugins/fastify"
+  },
+  "bugs": {
+    "url": "https://github.com/Hypergamed/Hyperhive/issues"
+  },
+  "homepage": "https://github.com/Hypergamed/Hyperhive/tree/main/packages/plugins/fastify#readme",
+  "keywords": [
+    "claude",
+    "anthropic",
+    "agent",
+    "ai",
+    "fastify",
+    "plugin",
+    "hyperhive"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist coverage"
+  },
+  "dependencies": {
+    "@hyperhive/colony": "workspace:*",
+    "fastify-plugin": "^5.0.1"
+  },
+  "peerDependencies": {
+    "fastify": "^5.0.0"
+  },
+  "devDependencies": {
+    "@hyperhive/config-eslint": "workspace:*",
+    "@hyperhive/config-typescript": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "eslint": "catalog:",
+    "fastify": "^5.2.1",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

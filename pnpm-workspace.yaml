@@ -1,0 +1,30 @@
+packages:
+  - "packages/colony"
+  - "packages/plugins/*"
+  - "packages/storages/*"
+  - "packages/observability/*"
+  - "packages/security/*"
+  - "packages/orchestration/*"
+  - "packages/ai/*"
+  - "packages/tools/*"
+  - "packages/configs/*"
+
+catalog:
+  # TypeScript
+  typescript: ^5.7.2
+
+  # Build
+  tsup: ^8.3.5
+
+  # Testing
+  vitest: ^2.1.8
+  "@vitest/coverage-v8": ^2.1.8
+
+  # Linting
+  eslint: ^9.17.0
+  "@eslint/js": ^9.17.0
+  typescript-eslint: ^8.18.1
+  globals: ^15.14.0
+
+  # Types
+  "@types/node": ^22.10.2
