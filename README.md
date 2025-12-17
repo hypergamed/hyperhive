@@ -6,6 +6,9 @@ A provider-agnostic LLM Agent SDK wrapper library for building AI-powered applic
 [![npm version](https://img.shields.io/npm/v/@hyperhive/colony.svg)](https://www.npmjs.com/package/@hyperhive/colony)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> **Warning**
+> This project is under active development and is not yet ready for production use. APIs may change without notice.
+
 ## Nomenclature
 
 Hyperhive uses bee-inspired naming:

@@ -54,20 +54,40 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: Create Release PR or Publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          version: pnpm version-packages
-          publish: pnpm release
-          commit: "chore(release): version packages"
-          title: "chore(release): version packages"
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          NPM_CONFIG_PROVENANCE: true
+      # =============================================================================
+      # NPM PUBLISHING DISABLED
+      # =============================================================================
+      # Publishing to npm is temporarily disabled. To re-enable:
+      # 1. Uncomment the "Create Release PR or Publish" and "Published packages" steps below
+      # 2. Remove or comment out the "Publishing Disabled Notice" step
+      # =============================================================================
 
-      - name: Published packages
-        if: steps.changesets.outputs.published == 'true'
+      - name: Publishing Disabled Notice
         run: |
-          echo "Published packages:"
-          echo '${{ steps.changesets.outputs.publishedPackages }}' | jq .
+          echo "============================================================================="
+          echo "ℹ️  NPM PUBLISHING IS CURRENTLY DISABLED"
+          echo "============================================================================="
+          echo ""
+          echo "Build and tests have passed successfully."
+          echo "Package publishing to npm is temporarily disabled."
+          echo ""
+          echo "To re-enable publishing, update .github/workflows/release.yml"
+          echo "============================================================================="
+
+      # - name: Create Release PR or Publish
+      #   id: changesets
+      #   uses: changesets/action@v1
+      #   with:
+      #     version: pnpm version-packages
+      #     publish: pnpm release
+      #     commit: "chore(release): version packages"
+      #     title: "chore(release): version packages"
+      #   env:
+      #     GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+      #     NPM_CONFIG_PROVENANCE: true
+
+      # - name: Published packages
+      #   if: steps.changesets.outputs.published == 'true'
+      #   run: |
+      #     echo "Published packages:"
+      #     echo '${{ steps.changesets.outputs.publishedPackages }}' | jq .
