@@ -19,7 +19,7 @@ export default {
       ],
     ],
     "scope-enum": [1, "always", ["colony", "plugin-fastify", "config", "ci", "deps", "release"]],
-    "subject-case": [2, "always", "lower-case"],
+    "subject-case": [2, "always", "sentence-case"],
     "subject-empty": [2, "never"],
     "type-empty": [2, "never"],
   },
