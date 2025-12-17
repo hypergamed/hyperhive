@@ -11,8 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  # Turborepo requires these exact env var names for remote caching
+  TURBO_TOKEN: ${{ secrets.VERCEL_ORG_TOKEN }}
+  TURBO_TEAM: ${{ vars.VERCEL_ORG_TEAM }}
 
 jobs:
   ci:
