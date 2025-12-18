@@ -27,4 +27,4 @@ catalog:
   globals: ^15.14.0
 
   # Types
-  "@types/node": ^22.10.2
+  "@types/node": ^25.0.3
