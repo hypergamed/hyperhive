@@ -145,7 +145,7 @@ jobs:
               { pattern: /^packages\/tools\//, label: 'pkg:tools' },
               { pattern: /^packages\/configs\//, label: 'pkg:configs' },
               { pattern: /^\.github\//, label: 'ci' },
-              { pattern: /^\.changeset\//, label: 'changeset' },
+              { pattern: /^\.changeset\/(?!config\.json|README\.md).+\.md$/, label: 'changeset' },
             ];
 
             const labelsToAdd = new Set();
