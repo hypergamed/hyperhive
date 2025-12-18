@@ -54,41 +54,224 @@ jobs:
   check-changeset:
     name: Check Changeset
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Check for changeset
+        id: changeset-check
         run: |
-          # Get list of changed files
           CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
 
-          # Check if any package files changed
           PACKAGE_CHANGED=false
           if echo "$CHANGED_FILES" | grep -qE "^packages/(colony|plugins|storages|observability|security|orchestration|ai|tools)/"; then
             PACKAGE_CHANGED=true
           fi
 
-          # Check if changeset exists
           CHANGESET_EXISTS=false
           if echo "$CHANGED_FILES" | grep -qE "^\.changeset/.*\.md$"; then
             CHANGESET_EXISTS=true
           fi
 
           if [ "$PACKAGE_CHANGED" = true ] && [ "$CHANGESET_EXISTS" = false ]; then
+            echo "needs_changeset=true" >> $GITHUB_OUTPUT
             echo "::warning::No changeset found. If this PR includes user-facing changes, please run 'pnpm changeset' to add one."
+          else
+            echo "needs_changeset=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Add 'needs-changeset' label
+        if: steps.changeset-check.outputs.needs_changeset == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['needs-changeset']
+            });
+
+      - name: Remove 'needs-changeset' label
+        if: steps.changeset-check.outputs.needs_changeset == 'false'
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'needs-changeset'
+            });
+
+  label-by-path:
+    name: Label by Path
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed packages and apply labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+
+            const changedFiles = execSync('git diff --name-only origin/main...HEAD')
+              .toString()
+              .trim()
+              .split('\n')
+              .filter(Boolean);
+
+            const packagePatterns = [
+              { pattern: /^packages\/colony\//, label: 'pkg:colony' },
+              { pattern: /^packages\/plugins\/fastify\//, label: 'pkg:plugin-fastify' },
+              { pattern: /^packages\/storages\//, label: 'pkg:storages' },
+              { pattern: /^packages\/observability\//, label: 'pkg:observability' },
+              { pattern: /^packages\/security\//, label: 'pkg:security' },
+              { pattern: /^packages\/orchestration\//, label: 'pkg:orchestration' },
+              { pattern: /^packages\/ai\//, label: 'pkg:ai' },
+              { pattern: /^packages\/tools\//, label: 'pkg:tools' },
+              { pattern: /^packages\/configs\//, label: 'pkg:configs' },
+              { pattern: /^\.github\//, label: 'ci' },
+              { pattern: /^\.changeset\/(?!config\.json|README\.md).+\.md$/, label: 'changeset' },
+            ];
+
+            const labelsToAdd = new Set();
+            const allPkgLabels = packagePatterns.map(p => p.label);
+
+            for (const file of changedFiles) {
+              for (const { pattern, label } of packagePatterns) {
+                if (pattern.test(file)) {
+                  labelsToAdd.add(label);
+                }
+              }
+            }
+
+            const currentLabels = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const currentLabelNames = currentLabels.data.map(l => l.name);
+
+            // Add new labels
+            const newLabels = [...labelsToAdd].filter(l => !currentLabelNames.includes(l));
+            if (newLabels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: newLabels,
+              });
+              console.log(`Added labels: ${newLabels.join(', ')}`);
+            }
+
+            // Remove stale package labels
+            const labelsToRemove = currentLabelNames.filter(
+              l => allPkgLabels.includes(l) && !labelsToAdd.has(l)
+            );
+            for (const label of labelsToRemove) {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: label,
+                });
+                console.log(`Removed label: ${label}`);
+              } catch (e) {
+                console.log(`Could not remove label ${label}: ${e.message}`);
+              }
+            }
+
+  label-pr-size:
+    name: Label PR Size
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate PR size and apply label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+
+            // Get diff stats
+            const diffStat = execSync('git diff --shortstat origin/main...HEAD')
+              .toString()
+              .trim();
+
+            // Parse insertions and deletions
+            const insertions = (diffStat.match(/(\d+) insertion/) || [0, 0])[1];
+            const deletions = (diffStat.match(/(\d+) deletion/) || [0, 0])[1];
+            const totalChanges = parseInt(insertions) + parseInt(deletions);
+
+            console.log(`Total changes: ${totalChanges} (${insertions} insertions, ${deletions} deletions)`);
+
+            // Determine size label
+            let sizeLabel;
+            if (totalChanges <= 50) {
+              sizeLabel = 'size:S';
+            } else if (totalChanges <= 200) {
+              sizeLabel = 'size:M';
+            } else if (totalChanges <= 500) {
+              sizeLabel = 'size:L';
+            } else {
+              sizeLabel = 'size:XL';
+            }
+
+            const allSizeLabels = ['size:S', 'size:M', 'size:L', 'size:XL'];
+
+            // Get current labels
+            const currentLabels = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const currentLabelNames = currentLabels.data.map(l => l.name);
+
+            // Remove old size labels
+            for (const label of allSizeLabels) {
+              if (currentLabelNames.includes(label) && label !== sizeLabel) {
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    name: label,
+                  });
+                  console.log(`Removed label: ${label}`);
+                } catch (e) {
+                  console.log(`Could not remove label ${label}: ${e.message}`);
+                }
+              }
+            }
+
+            // Add new size label
+            if (!currentLabelNames.includes(sizeLabel)) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: [sizeLabel],
+              });
+              console.log(`Added label: ${sizeLabel}`);
+            }
