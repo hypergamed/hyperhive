@@ -18,7 +18,7 @@ catalog:
 
   # Testing
   vitest: ^4.0.16
-  "@vitest/coverage-v8": ^2.1.8
+  "@vitest/coverage-v8": ^4.0.16
 
   # Linting
   eslint: ^9.17.0
