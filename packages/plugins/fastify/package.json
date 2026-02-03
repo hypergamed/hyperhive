@@ -68,7 +68,7 @@
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
-    "fastify": "^5.2.1",
+    "fastify": "^5.7.3",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
